@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!--
+  ===========================================================================
+  【学習・ポートフォリオ用の架空プロジェクト】
+  このファイルは、京都・先斗町の老舗料理店「いづもや」を題材にした
+  リブランディング練習用のデモサイトです。
+  - 実店舗の許可を取得していません
+  - 文章・写真・ロゴは実際のものを使用していません（オリジナル制作）
+  - 実際のウェブへの公開を前提としていません
+  - ご予約・Instagramリンクはデモのため無効化されています
+  ===========================================================================
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>いづもや｜京都・先斗町の老舗料理店</title>
+  <meta name="description" content="大正5年創業。先斗町の老舗料理店いづもやは、秘伝の江戸前鰻、鴨川納涼床、京懐石を通じて、百年の味を現代に伝えます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ---- added: language switcher / demo-disabled state / allergen box ---- */
+    .lang-switch {
+      display: flex;
+      gap: 4px;
+      margin-left: 16px;
+      align-items: center;
+    }
+    .lang-switch--mobile {
+      justify-content: center;
+      margin: 0 0 24px;
+    }
+    .lang-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      padding: 5px 9px;
+      border: 1px solid rgba(43, 43, 43, 0.35);
+      background: transparent;
+      color: inherit;
+      border-radius: 4px;
+      cursor: pointer;
+      line-height: 1;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .lang-btn.is-active {
+      background: #274c5b;
+      color: #f5f1e8;
+      border-color: #274c5b;
+    }
+    .lang-btn:hover { border-color: #274c5b; }
+
+    .js-demo-disabled { cursor: pointer; }
+
+    .demo-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(16px);
+      background: #2b2b2b;
+      color: #f5f1e8;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 13.5px;
+      line-height: 1.5;
+      max-width: 88vw;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 9999;
+    }
+    .demo-toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .allergen-box {
+      margin-top: 22px;
+      padding: 18px 20px;
+      background: rgba(39, 76, 91, 0.05);
+      border-left: 3px solid #c1440e;
+      border-radius: 4px;
+    }
+    .allergen-box h4 {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      letter-spacing: 0.02em;
+    }
+    .allergen-list {
+      list-style: none;
+      margin: 0 0 10px;
+      padding: 0;
+      display: grid;
+      gap: 7px;
+    }
+    .allergen-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px dashed rgba(43, 43, 43, 0.15);
+      font-size: 13px;
+      font-family: "Noto Sans JP", sans-serif;
+    }
+    .allergen-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: #c1440e;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .allergen-tag.none {
+      background: rgba(43, 43, 43, 0.35);
+    }
+    .allergen-note {
+      font-size: 12px;
+      line-height: 1.6;
+      opacity: 0.8;
+      margin: 8px 0 0;
+      font-family: "Noto Sans JP", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <header id="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="#hero" class="site-logo" aria-label="いづもや トップへ">
+        いづもや
+        <span>IZUMOYA PONTOCHO, KYOTO</span>
+      </a>
+      <nav class="site-nav" aria-label="メインナビゲーション">
+        <a href="#why" data-i18n="nav.about">ご紹介</a>
+        <a href="#menu" data-i18n="nav.menu">お品書き</a>
+        <a href="#yuka" data-i18n="nav.yuka">納涼床</a>
+        <a href="#access" data-i18n="nav.access">アクセス</a>
+        <a href="#" class="nav-reserve js-demo-disabled" id="nav-tel" data-i18n="nav.reserve">ご予約</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language / 言語切替 / 语言切换 / 언어 선택">
+        <button type="button" class="lang-btn is-active" data-lang="ja">JA</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="zh">中文</button>
+        <button type="button" class="lang-btn" data-lang="ko">KO</button>
+      </div>
+      <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobile-nav" role="dialog" aria-label="モバイルナビ">
+    <button class="mobile-close" id="mobile-close" aria-label="閉じる">✕</button>
+    <div class="lang-switch lang-switch--mobile" role="group" aria-label="Language / 言語切替 / 语言切换 / 언어 선택">
+      <button type="button" class="lang-btn is-active" data-lang="ja">JA</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="zh">中文</button>
+      <button type="button" class="lang-btn" data-lang="ko">KO</button>
+    </div>
+    <a href="#why" class="mobile-link" data-i18n="nav.about">ご紹介</a>
+    <a href="#menu" class="mobile-link" data-i18n="nav.menu">お品書き</a>
+    <a href="#yuka" class="mobile-link" data-i18n="nav.yuka">納涼床</a>
+    <a href="#sns" class="mobile-link" data-i18n="nav.sns">SNS</a>
+    <a href="#access" class="mobile-link" data-i18n="nav.access">アクセス・予約</a>
+    <a href="#" class="btn btn-primary js-demo-disabled" id="mobile-reserve" data-i18n="mobile.reserve">☎ ご予約</a>
+  </div>
+
+  <main>
+    <section id="hero" aria-label="ヒーローセクション">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-badge" aria-hidden="true">
+        <div class="hero-badge-inner">
+          <span class="label-top">SINCE</span>
+          <span class="label-year">1916</span>
+          <span class="label-bot" data-i18n="hero.badge.era">大正五年</span>
+        </div>
+      </div>
+      <div class="hero-content container">
+        <p class="hero-kana">KAMOGAWA NAWAYUKA ／ PONTOCHO, KYOTO</p>
+        <h1 class="hero-title" data-i18n="hero.title">鴨川のせせらぎで味わう、<br />話題のすきやき。</h1>
+        <p class="hero-sub" data-i18n="hero.sub">大正5年創業。先斗町の老舗が、百年の味を今夜も丁寧に。</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary js-demo-disabled" id="hero-reserve" data-i18n="hero.reserve">☎ ご予約はこちら</a>
+          <a href="#menu" class="btn btn-outline" id="hero-menu" data-i18n="hero.menu">お品書きを見る</a>
+        </div>
+      </div>
+      <div class="scroll-hint" aria-hidden="true">
+        <span>SCROLL</span>
+        <div class="scroll-hint-line"></div>
+      </div>
+    </section>
+
+    <section id="why" class="section-pad" aria-labelledby="why-title">
+      <div class="container">
+        <div class="why-header reveal">
+          <p class="section-label">ABOUT IZUMOYA</p>
+          <h2 id="why-title" class="section-title" data-i18n="why.title">いづもやが選ばれる、<br />四つの理由</h2>
+          <p class="section-subtitle" data-i18n="why.subtitle">百年の歳月が育んだ味と、京都の四季が重なる場所。それがいづもやです。</p>
+        </div>
+        <div class="why-grid">
+          <article class="why-card reveal reveal-delay-1" id="why-unagi">
+            <span class="why-icon" aria-hidden="true">🐟</span>
+            <h3 class="why-name" data-i18n="why.unagi.name">江戸前の手法で焼き上げる<br />秘伝の鰻蒲焼</h3>
+            <p class="why-desc" data-i18n="why.unagi.desc">創業以来継ぎ足してきた秘伝のタレと、蒸しを入れた江戸前手法。外はパリッと、中はふっくら。百年が育んだ一串です。</p>
+            <p class="why-year" data-i18n="why.unagi.year">▸ 創業より百余年の味</p>
+          </article>
+          <article class="why-card reveal reveal-delay-2" id="why-yuka">
+            <span class="why-icon" aria-hidden="true">🏮</span>
+            <h3 class="why-name" data-i18n="why.yuka.name">鴨川を望む<br />納涼床110席</h3>
+            <p class="why-desc" data-i18n="why.yuka.desc">川床随一の規模を誇る110席。川のせせらぎを聞きながら、東山三十六峰を眺める夏の夜は、京都でしか味わえない贅沢です。</p>
+            <p class="why-year" data-i18n="why.yuka.year">▸ 5月〜10月開設</p>
+          </article>
+          <article class="why-card reveal reveal-delay-3" id="why-kaiseki">
+            <span class="why-icon" aria-hidden="true">🍃</span>
+            <h3 class="why-name" data-i18n="why.kaiseki.name">京懐石で感じる<br />四季の彩り</h3>
+            <p class="why-desc" data-i18n="why.kaiseki.desc">春の山菜から夏の鱧しゃぶ、秋の松茸、冬のてっちりまで。京都の旬を丁寧に仕立てた京懐石で、四季の移ろいをご堪能ください。</p>
+            <p class="why-year" data-i18n="why.kaiseki.year">▸ 季節のコース多数</p>
+          </article>
+          <article class="why-card reveal reveal-delay-4" id="why-tiktok">
+            <span class="why-icon" aria-hidden="true">✨</span>
+            <h3 class="why-name" data-i18n="why.tiktok.name">TikTokで話題沸騰<br />納涼床すきやき</h3>
+            <p class="why-desc" data-i18n="why.tiktok.desc">川風が流れる床の上で楽しむ黒毛和牛のすきやき。その非日常的な光景がSNSで話題を集め、予約が殺到しています。</p>
+            <p class="why-year" data-i18n="why.tiktok.year">▸ 3,960円〜（床料金込み）</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <hr class="shoji-divider" />
+
+    <section id="menu" class="section-pad" aria-labelledby="menu-title">
+      <div class="container">
+        <div class="menu-header reveal">
+          <p class="section-label">SHINA GAKI</p>
+          <h2 id="menu-title" class="section-title" data-i18n="menu.title">お品書き</h2>
+          <p class="section-subtitle" data-i18n="menu.subtitle">今宵もご用意してお待ちしております。</p>
+        </div>
+        <div class="menu-featured reveal" id="menu-sukiyaki-card">
+          <div class="menu-featured-img">
+            <img src="assets/menu_sukiyaki.jpg" alt="鴨川納涼床すきやき — 黒毛和牛と秘伝のだしが奏でる味わい" loading="lazy" />
+            <span class="menu-featured-badge" data-i18n="menu.featured.badge">SNS話題</span>
+          </div>
+          <div class="menu-featured-info">
+            <p class="menu-featured-label">NAWAYUKA SPECIAL</p>
+            <h3 class="menu-featured-name" data-i18n="menu.featured.name">鴨川納涼床<br />すきやき</h3>
+            <p class="menu-featured-price" data-i18n="menu.featured.price">3,960円〜（税込）</p>
+            <p class="menu-featured-desc" data-i18n="menu.featured.desc">黒毛和牛を甘辛い割り下でさっと煮る、いづもやのすきやき。川風が流れる納涼床で、溶き卵にくぐらせてお召し上がりください。夕暮れ時の東山を望みながら味わう一皿は、忘れられない京の思い出になるはずです。</p>
+            <span class="tiktok-pill" data-i18n="menu.featured.pill">♪ TikTok ／ Instagram で話題</span>
+
+            <div class="allergen-box" data-i18n="menu.featured.allergen">
+              <h4>使用食材・アレルギー表示</h4>
+              <ul class="allergen-list">
+                <li><span>黒毛和牛 肩ロース薄切り</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>白菜</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>春菊</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>焼き豆腐</span><span class="allergen-tag">大豆</span></li>
+                <li><span>しらたき（糸こんにゃく）</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>長ねぎ</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>しいたけ・えのき</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+                <li><span>麩（小麦グルテン）</span><span class="allergen-tag">小麦・グルテン</span></li>
+                <li><span>割り下（醤油・みりん・砂糖・だし）</span><span class="allergen-tag">小麦・グルテン／大豆</span></li>
+                <li><span>溶き卵（つけだれ用）</span><span class="allergen-tag">卵</span></li>
+                <li><span>白ご飯</span><span class="allergen-tag none">アレルギー該当なし</span></li>
+              </ul>
+              <p class="allergen-note">※ナッツ類（ピーナッツ・木の実類）は使用しておりません。※調理場は共通のため、微量混入の可能性があります。ご不安な点はスタッフまでお申し付けください。</p>
+            </div>
+          </div>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-card reveal reveal-delay-1" id="menu-unagi-card">
+            <div class="menu-card-img">
+              <img src="assets/menu_unaju.jpg" alt="秘伝鰻蒲焼 — 江戸前手法で丁寧に仕立てた一品" loading="lazy" />
+            </div>
+            <div class="menu-card-body">
+              <p class="menu-card-season">SPECIALTY</p>
+              <h3 class="menu-card-name" data-i18n="menu.unagi.name">秘伝鰻蒲焼</h3>
+              <p class="menu-card-desc" data-i18n="menu.unagi.desc">大正5年から継ぎ足してきた秘伝のタレで焼き上げる江戸前鰻。外はパリ、中はふっくら、百年の味をお楽しみください。</p>
+            </div>
+          </article>
+          <article class="menu-card reveal reveal-delay-2" id="menu-shabu-card">
+            <div class="menu-card-img">
+              <img src="assets/menu_shabu.jpg" alt="京のしゃぶしゃぶ — 昆布だしでいただく上質な一皿" loading="lazy" />
+            </div>
+            <div class="menu-card-body">
+              <p class="menu-card-season">ALL SEASON</p>
+              <h3 class="menu-card-name" data-i18n="menu.shabu.name">京のしゃぶしゃぶ</h3>
+              <p class="menu-card-desc" data-i18n="menu.shabu.desc">利尻昆布の一番だしに、霜降り肉をさっとくぐらせて。京ポン酢と胡麻ダレでいただく、上品な鍋料理です。</p>
+            </div>
+          </article>
+          <article class="menu-card reveal reveal-delay-3" id="menu-kaiseki-card">
+            <div class="menu-card-img">
+              <img src="assets/interior.jpg" alt="京懐石コース — 四季の美食を一皿ずつ丁寧に" loading="lazy" />
+            </div>
+            <div class="menu-card-body">
+              <p class="menu-card-season">KAISEKI</p>
+              <h3 class="menu-card-name" data-i18n="menu.kaiseki.name">京懐石コース</h3>
+              <p class="menu-card-desc" data-i18n="menu.kaiseki.desc">旬の食材を活かした八寸から始まるコース。夏は鱧しゃぶ、冬はてっちりと、四季折々の京の味を堪能いただけます。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="yuka" class="section-pad" aria-labelledby="yuka-title">
+      <div class="container yuka-inner">
+        <div class="yuka-header reveal">
+          <p class="section-label yuka-label">NAWAYUKA</p>
+          <h2 id="yuka-title" class="section-title yuka-title-text" data-i18n="yuka.title">鴨川の風と、<br />夏の食卓。</h2>
+          <p class="section-subtitle yuka-subtitle" data-i18n="yuka.subtitle">5月〜10月、鴨川沿いに広がるいづもやの納涼床。川のせせらぎと夕暮れの東山を眺めながら、京都の夏を全身で味わってください。</p>
+        </div>
+        <div class="yuka-layout reveal">
+          <div class="yuka-gallery">
+            <div class="yuka-gallery-item">
+              <img src="assets/hero.jpg" alt="夜の納涼床 — 提灯の灯りが揺れる鴨川沿いの夕餉" loading="lazy" />
+            </div>
+            <div class="yuka-gallery-item">
+              <img src="assets/yuka_day.jpg" alt="昼の納涼床 — 緑輝く夏の鴨川" loading="lazy" />
+            </div>
+            <div class="yuka-gallery-item">
+              <img src="assets/interior.jpg" alt="一面ガラス張りの室内席から望む東山の夕景" loading="lazy" />
+            </div>
+          </div>
+          <div>
+            <ul class="yuka-info-list">
+              <li class="yuka-info-item">
+                <p class="yuka-info-label">SEASON</p>
+                <p class="yuka-info-value" data-i18n="yuka.season.value">5月1日〜10月31日</p>
+                <p class="yuka-info-note" data-i18n="yuka.season.note">天候・水位によって臨時休床の場合あり</p>
+              </li>
+              <li class="yuka-info-item">
+                <p class="yuka-info-label">CAPACITY</p>
+                <p class="yuka-info-value" data-i18n="yuka.capacity.value">110席</p>
+                <p class="yuka-info-note" data-i18n="yuka.capacity.note">川床随一の規模。団体・貸切もご相談ください</p>
+              </li>
+              <li class="yuka-info-item">
+                <p class="yuka-info-label">DINNER MENU</p>
+                <p class="yuka-info-value" data-i18n="yuka.dinner.value">床料理 すきやき<br />3,960円〜（税込）</p>
+                <p class="yuka-info-note" data-i18n="yuka.dinner.note">床料金込み。その他コースも多数ご用意 ／ アレルギー表示はお品書きをご覧ください</p>
+              </li>
+              <li class="yuka-info-item">
+                <p class="yuka-info-label">VIEW</p>
+                <p class="yuka-info-value" data-i18n="yuka.view.value">東山三十六峰と<br />鴨川の流れ</p>
+                <p class="yuka-info-note" data-i18n="yuka.view.note">一面ガラス張りの室内席からも同じ眺めをご覧いただけます</p>
+              </li>
+            </ul>
+            <div class="yuka-cta">
+              <a href="#" class="btn btn-primary js-demo-disabled" id="yuka-reserve" data-i18n="yuka.reserve">☎ 納涼床を予約する</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sns" class="section-pad" aria-labelledby="sns-title">
+      <div class="container">
+        <div class="sns-header reveal text-center">
+          <p class="section-label sns-label">SNS</p>
+          <h2 id="sns-title" class="section-title" data-i18n="sns.title">いま、話題になっています。</h2>
+          <p class="section-subtitle sns-subtitle" data-i18n="sns.subtitle">納涼床すきやきの圧倒的な景色と味が、SNSで広まっています。実際にお越しいただいた方の声をご紹介します。</p>
+        </div>
+        <div class="buzz-grid">
+          <div class="buzz-card reveal reveal-delay-1">
+            <div class="buzz-quote" aria-hidden="true">"</div>
+            <p class="buzz-text" data-i18n="sns.buzz1.text">夕暮れの鴨川を眺めながら食べるすきやきは、なんとも言えない特別感。ここに来て正解でした。</p>
+            <div class="buzz-meta"><span class="buzz-meta-icon" aria-hidden="true">🍴</span><span data-i18n="sns.buzz1.meta">食べログ口コミ より（イメージ）</span></div>
+          </div>
+          <div class="buzz-card reveal reveal-delay-2">
+            <div class="buzz-quote" aria-hidden="true">"</div>
+            <p class="buzz-text" data-i18n="sns.buzz2.text">TikTokで見て気になって予約。提灯の灯りと川音がBGMで、雰囲気が最高すぎた。また来年も来ます。</p>
+            <div class="buzz-meta"><span class="buzz-meta-icon" aria-hidden="true">♪</span><span data-i18n="sns.buzz2.meta">TikTok ユーザー（イメージ）</span></div>
+          </div>
+          <div class="buzz-card reveal reveal-delay-3">
+            <div class="buzz-quote" aria-hidden="true">"</div>
+            <p class="buzz-text" data-i18n="sns.buzz3.text">老舗なのに気取ってなくて、若い人でも入りやすい。鰻重は絶品で、川風が気持ちよかったです。</p>
+            <div class="buzz-meta"><span class="buzz-meta-icon" aria-hidden="true">📸</span><span data-i18n="sns.buzz3.meta">Instagram ユーザー（イメージ）</span></div>
+          </div>
+        </div>
+        <div class="sns-cta-wrap reveal">
+          <p data-i18n="sns.cta.text">最新の情報やフォトギャラリーはInstagramでチェック</p>
+          <a href="#" class="btn btn-outline-dark js-demo-disabled" id="instagram-link" data-i18n="sns.cta.button">📷 @pontochoo.idumoyaa をフォロー</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="access" class="section-pad" aria-labelledby="access-title">
+      <div class="container">
+        <div class="access-header reveal">
+          <p class="section-label">ACCESS &amp; RESERVE</p>
+          <h2 id="access-title" class="section-title" data-i18n="access.title">アクセス・ご予約</h2>
+          <p class="section-subtitle" data-i18n="access.subtitle">お電話でのご予約を承っております。お気軽にお問い合わせください。</p>
+        </div>
+        <div class="access-layout">
+          <div class="map-wrap reveal">
+            <div class="map-placeholder">
+              <div class="map-placeholder-icon" aria-hidden="true">🗾</div>
+              <p data-i18n="access.map.text">京都市中京区 先斗町通四条上る</p>
+              <p class="map-note" data-i18n="access.map.note">（地図は本番環境で Google Maps を埋め込み）</p>
+            </div>
+          </div>
+          <div class="access-info-grid reveal reveal-delay-2">
+            <div class="access-info-item">
+              <p class="access-info-label">ADDRESS</p>
+              <p class="access-info-value" data-i18n="access.address.value">京都市中京区<br />先斗町通四条上る</p>
+              <p class="access-info-note" data-i18n="access.address.note">阪急「京都河原町」駅より徒歩約4分</p>
+            </div>
+            <div class="access-info-item">
+              <p class="access-info-label">OPEN</p>
+              <p class="access-info-value">11:30 — 22:00</p>
+              <p class="access-info-note" data-i18n="access.open.note">年中無休（年末年始は要確認）</p>
+            </div>
+            <div class="access-info-item">
+              <p class="access-i
